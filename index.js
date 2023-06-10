@@ -83,7 +83,7 @@ getServices: function() {
     
 getHeatingUpOrDwTemperature: function(callback) {
     var body;
-    str = 'curl -s -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure -X GET https://'+this.ip+':8888/devices|jq \'.Devices[0].Temperatures[0].desired\'';
+    str = 'OPENSSL_CONF=openssl.conf curl -s -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure -X GET https://'+this.ip+':8888/devices|jq \'.Devices[0].Temperatures[0].desired\'';
     
     this.log(str);
     
@@ -110,7 +110,7 @@ getHeatingUpOrDwTemperature: function(callback) {
 setHeatingUpOrDwTemperature: function(temp, callback) {
     var body;
     
-    str = 'curl -X PUT -d \'{"desired": '+temp+'}\' -v -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure https://'+this.ip+':8888/devices/0/temperatures/0';
+    str = 'OPENSSL_CONF=openssl.conf curl -X PUT -d \'{"desired": '+temp+'}\' -v -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure https://'+this.ip+':8888/devices/0/temperatures/0';
     this.log(str);
     
     this.execRequest(str, body, function(error, stdout, stderr) {
@@ -131,7 +131,7 @@ setHeatingUpOrDwTemperature: function(temp, callback) {
 getCurrentHeaterCoolerState: function (callback) {
     var body;
     
-    str= 'curl -s -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure -X GET https://'+this.ip+':8888/devices|jq \'.Devices[0].Mode.modes[0]\'';
+    str= 'OPENSSL_CONF=openssl.conf curl -s -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure -X GET https://'+this.ip+':8888/devices|jq \'.Devices[0].Mode.modes[0]\'';
     this.log(str);
     
     this.execRequest(str, body, function(error, stdout, stderr) {
@@ -164,7 +164,7 @@ getCurrentHeaterCoolerState: function (callback) {
 getCurrentTemperature: function(callback) {
     var body;
     
-    str = 'curl -s -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure -X GET https://'+this.ip+':8888/devices|jq \'.Devices[0].Temperatures[0].current\'';
+    str = 'OPENSSL_CONF=openssl.conf curl -s -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure -X GET https://'+this.ip+':8888/devices|jq \'.Devices[0].Temperatures[0].current\'';
     this.log(str);
     
     this.execRequest(str, body, function(error, stdout, stderr) {
@@ -188,7 +188,7 @@ getCurrentTemperature: function(callback) {
 getActive: function(callback) {
     var body;
     var OFForON;
-    str = 'curl -s -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure -X GET https://'+this.ip+':8888/devices|jq \'.Devices[0].Operation.power\'';
+    str = 'OPENSSL_CONF=openssl.conf curl -s -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure -X GET https://'+this.ip+':8888/devices|jq \'.Devices[0].Operation.power\'';
     
     this.log(str);
     
@@ -230,11 +230,11 @@ setActive: function(state, callback) {
     this.log(ip);
     var activeFuncion = function(state) {
         if (state==Characteristic.Active.ACTIVE) {
-            str = 'curl -k -H "Content-Type: application/json" -H "Authorization: Bearer '+token+'" --cert '+patchCert+' --insecure -X PUT -d \'{"Operation" : {\"power"\ : \"On"\}}\' https://'+ip+':8888/devices/0';
+            str = 'OPENSSL_CONF=openssl.conf curl -k -H "Content-Type: application/json" -H "Authorization: Bearer '+token+'" --cert '+patchCert+' --insecure -X PUT -d \'{"Operation" : {\"power"\ : \"On"\}}\' https://'+ip+':8888/devices/0';
             console.log("The Clima is ATTIVO in setModalita");
         } else {
             console.log("The Clima is INATTIVO or UNKNOW in setModalita");
-            str = 'curl -k -H "Content-Type: application/json" -H "Authorization: Bearer '+token+'" --cert '+patchCert+' --insecure -X PUT -d \'{"Operation" : {\"power"\ : \"Off"\}}\' https://'+ip+':8888/devices/0';
+            str = 'OPENSSL_CONF=openssl.conf curl -k -H "Content-Type: application/json" -H "Authorization: Bearer '+token+'" --cert '+patchCert+' --insecure -X PUT -d \'{"Operation" : {\"power"\ : \"Off"\}}\' https://'+ip+':8888/devices/0';
         }
     }
 
@@ -264,13 +264,13 @@ setPowerState: function(powerOn, callback) {
     if (powerOn) {
         body=this.setOn
         this.log("Accendo ");
-        str = 'curl -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure -X PUT -d \'{"Operation" : {\"power"\ : \"On"\}}\' https://'+this.ip+':8888/devices/0';
+        str = 'OPENSSL_CONF=openssl.conf curl -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure -X PUT -d \'{"Operation" : {\"power"\ : \"On"\}}\' https://'+this.ip+':8888/devices/0';
         //powerOn=false;
         
     } else {
         body=this.setOff;
         this.log("Spengo ");
-        str = 'curl -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure -X PUT -d \'{"Operation" : {\"power"\ : \"Off"\}}\' https://'+this.ip+':8888/devices/0';
+        str = 'OPENSSL_CONF=openssl.conf curl -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure -X PUT -d \'{"Operation" : {\"power"\ : \"Off"\}}\' https://'+this.ip+':8888/devices/0';
         //powerOn=true;
     }
     this.log(str);
@@ -296,7 +296,7 @@ getModalita: function(callback) {
    // if (data.setting.power=="OFF") {
     //    callback(null, null);
  //   }
-    str= 'curl -s -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure -X GET https://'+this.ip+':8888/devices|jq \'.Devices[0].Mode.modes[0]\'';
+    str= 'OPENSSL_CONF=openssl.conf curl -s -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure -X GET https://'+this.ip+':8888/devices|jq \'.Devices[0].Mode.modes[0]\'';
     this.log(str);
     
     this.execRequest(str, body, function(error, stdout, stderr) {
@@ -339,7 +339,7 @@ setModalita: function(state, callback) {
             var body;
            // if (accessory.coolMode){
                 this.log("Setting  AC to COOL")
-                 str =  'curl -X PUT -d \'{"modes": ["Cool"]}\' -v -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure https://'+this.ip+':8888/devices/0/mode';
+                 str =  'OPENSSL_CONF=openssl.conf curl -X PUT -d \'{"modes": ["Cool"]}\' -v -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure https://'+this.ip+':8888/devices/0/mode';
                  this.log(str);
                 this.execRequest(str, body, function(error, stdout, stderr) {
                                  if(error) {
@@ -359,7 +359,7 @@ setModalita: function(state, callback) {
             var body;
             //if (accessory.heatMode){
                 this.log("Setting  AC to HEAT")
-                str =  'curl -X PUT -d \'{"modes": ["Heat"]}\' -v -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure https://'+this.ip+':8888/devices/0/mode';
+                str =  'OPENSSL_CONF=openssl.conf curl -X PUT -d \'{"modes": ["Heat"]}\' -v -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure https://'+this.ip+':8888/devices/0/mode';
                 this.log(str);
                 this.execRequest(str, body, function(error, stdout, stderr) {
                                  if(error) {
@@ -378,7 +378,7 @@ setModalita: function(state, callback) {
     var body;
            // if (accessory.autoMode){
                 this.log("Setting  AC to AUTO")
-                str =  'curl -X PUT -d \'{"modes": ["Auto"]}\' -v -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure https://'+this.ip+':8888/devices/0/mode';
+                str =  'OPENSSL_CONF=openssl.conf curl -X PUT -d \'{"modes": ["Auto"]}\' -v -k -H "Content-Type: application/json" -H "Authorization: Bearer '+this.token+'" --cert '+this.patchCert+' --insecure https://'+this.ip+':8888/devices/0/mode';
                 this.log(str);
                 this.execRequest(str, body, function(error, stdout, stderr) {
                                  if(error) {

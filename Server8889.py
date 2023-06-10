@@ -1,4 +1,4 @@
-from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from optparse import OptionParser
 import ssl
 
@@ -17,7 +17,6 @@ class RequestHandler(BaseHTTPRequestHandler):
         
         self.send_response(200)
         self.send_header("Set-Cookie", "foo=bar")
-        self.send_header()
     
     def do_POST(self):
         
@@ -27,12 +26,12 @@ class RequestHandler(BaseHTTPRequestHandler):
         print(request_path)
         
         request_headers = self.headers
-        content_length = request_headers.getheaders('content-length')
-        length = int(content_length[0]) if content_length else 0
+        content_length = request_headers.get_params(header='content-length')
+        length = int(content_length[0][0]) if content_length else 28
         
         print(request_headers)
-        print(self.rfile.read(length))
-        print(self)
+        body = self.rfile.read(length)
+        print(body.decode('utf-8'))
         print("<----- Request End -----\n")
         
         self.send_response(200)
@@ -44,7 +43,7 @@ def main():
     port = 8889
     print('Listening on localhost:%s' % port)
     server = HTTPServer(('', port), RequestHandler)
-    server.socket = ssl.wrap_socket(server.socket, certfile='/usr/local/lib/node_modules/homebridge-samsung-airconditioner/ac14k_m.pem', server_side=True)
+    server.socket = ssl.wrap_socket(server.socket, certfile='./ac14k_m.pem', server_side=True)
     server.serve_forever()
 
 
